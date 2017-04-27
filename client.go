@@ -121,13 +121,18 @@ func dataToSign(method, requestURL string, authHeader string, headers http.Heade
 		return ""
 	}
 
+	bodyHash := ""
+	if method == "POST" && len(body) > 0 {
+		bodyHash = Compute256(body)
+	}
+
 	dataToSign := []string{
 		method,
 		parsedURL.Scheme,
 		parsedURL.Host,
 		parsedURL.Path + parsedURL.RawQuery,
 		"",
-		Compute256(body),
+		bodyHash,
 		authHeader,
 	}
 
